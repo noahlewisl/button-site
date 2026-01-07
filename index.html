@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One-File Button Website</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 25px;
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 100px rgba(255, 255, 255, 0.2) inset;
+            text-align: center;
+            border: 3px solid #ffffff;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(255,255,255,0.1) 50%, 
+                transparent 70%);
+            animation: shine 3s infinite linear;
+            pointer-events: none;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(0deg) translateX(-50%) translateY(-50%); }
+            100% { transform: rotate(360deg) translateX(-50%) translateY(-50%); }
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 2.8rem;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(45deg, #3498db, #9b59b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+        
+        .message-box {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px dashed #3498db;
+            transition: all 0.3s;
+        }
+        
+        .message-box.pressed {
+            background: linear-gradient(145deg, #d4edda, #c3e6cb);
+            border: 2px solid #28a745;
+            animation: pulse 0.5s;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+        
+        #status-text {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .counter {
+            font-size: 1.3rem;
+            color: #34495e;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        #press-count {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 2rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        #main-button {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+            color: white;
+            border: none;
+            padding: 25px 50px;
+            font-size: 1.8rem;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 30px 0;
+            box-shadow: 
+                0 10px 20px rgba(255, 107, 107, 0.4),
+                0 0 0 5px rgba(255, 255, 255, 0.8),
+                0 0 0 10px rgba(52, 152, 219, 0.3);
+            font-weight: bold;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #main-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 
+                0 15px 30px rgba(255, 107, 107, 0.6),
+                0 0 0 5px rgba(255, 255, 255, 0.9),
+                0 0 0 10px rgba(52, 152, 219, 0.4);
+        }
+        
+        #main-button:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 
+                0 5px 10px rgba(255, 107, 107, 0.4),
+                0 0 0 5px rgba(255, 255, 255, 0.8),
+                0 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        #main-button::after {
+            content: '👉 CLICK ME! 👈';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        #main-button:hover::after {
+            opacity: 1;
+        }
+        
+        #main-button::before {
+            content: '🎯 PRESS ME! 🎯';
+        }
+        
+        #main-button:hover::before {
+            opacity: 0;
+        }
+        
+        .button-hint {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        .secret-message {
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(155, 89, 182, 0.1);
+            border-radius: 10px;
+            min-height: 60px;
+            border: 1px solid rgba(155, 89, 182, 0.3);
+        }
+        
+        #secret-text {
+            font-size: 1.3rem;
+            color: #8e44ad;
+            font-style: italic;
+        }
+        
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #ecf0f1;
+            color: #95a5a6;
+            font-size: 1rem;
+        }
+        
+        .url-display {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        
+        .emoji {
+            font-size: 1.5em;
+            animation: spin 4s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .emoji:nth-child(2n) {
+            animation-direction: reverse;
+            animation-duration: 3s;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            #main-button {
+                padding: 20px 30px;
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>
+            <span class="emoji">🔘</span>
+            THE ONE-FILE BUTTON WEBSITE
+            <span class="emoji">🔘</span>
+        </h1>
+        
+        <p class="subtitle">Everything in a single HTML file • No external dependencies</p>
+        
+        <div class="message-box" id="message-box">
+            <div id="status-text">
+                <span class="emoji">👆</span>
+                Ready for your first button press!
+                <span class="emoji">👆</span>
+            </div>
+            
+            <div class="counter">
+                <span class="emoji">🔢</span>
+                BUTTON PRESSES: 
+                <span id="press-count">0</span>
+                <span class="emoji">🔢</span>
+            </div>
+        </div>
+        
+        <button id="main-button"></button>
+        
+        <div class="button-hint">
+            <span class="emoji">👇</span> SERIOUSLY, CLICK THE BUTTON! <span class="emoji">👇</span>
+        </div>
+        
+        <div class="secret-message">
+            <p id="secret-text"></p>
+        </div>
+        
+        <div class="footer">
+            <p><span class="emoji">💾</span> Single HTML File | <span class="emoji">⚡</span> Self-Contained</p>
+            <p class="url-display" id="url-display">
+                URL: <span id="current-url">Displayed when hosted</span>
+            </p>
+            <p><span class="emoji">🔄</span> Save this file as .html and open in any browser</p>
+        </div>
+    </div>
+
+    <script>
+        // Get DOM elements
+        const button = document.getElementById('main-button');
+        const statusText = document.getElementById('status-text');
+        const pressCount = document.getElementById('press-count');
+        const secretText = document.getElementById('secret-text');
+        const messageBox = document.getElementById('message-box');
+        const urlDisplay = document.getElementById('current-url');
+        const emojis = document.querySelectorAll('.emoji');
+        
+        // Initialize counters
+        let presses = 0;
+        const messages = [
+            "First press! You did it! 🎉",
+            "Again! You can't stop! 🔥",
+            "Button addiction engaged! ⚡",
+            "PRESSING INTENSIFIES! 💥",
+            "ULTRA COMBO! 🏆",
+            "LEGENDARY BUTTON MASTER! 👑",
+            "UNSTOPPABLE! INFINITE PRESSES! ♾️"
+        ];
+        
+        const secretMessages = [
+            "You discovered: The button likes you!",
+            "Secret: This button has no purpose!",
+            "Easter Egg: Press more for secrets!",
+            "Hidden: The button is sentient!",
+            "Secret Achievement: Button Buddy!",
+            "Mystery: Why are you still pressing?",
+            "Final Secret: You won... nothing! 🏁"
+        ];
+        
+        // Display current URL
+        urlDisplay.textContent = window.location.href || "Save this file and open locally!";
+        
+        // Add click handler
+        button.addEventListener('click', function() {
+            // Update counter
+            presses++;
+            pressCount.textContent = presses;
+            
+            // Update status text
+            const messageIndex = Math.min(presses - 1, messages.length - 1);
+            statusText.innerHTML = `
+                <span class="emoji">${presses > 5 ? '🚀' : '👍'}</span>
+                ${messages[messageIndex]}
+                <span class="emoji">${presses > 5 ? '🚀' : '👍'}</span>
+            `;
+            
+            // Update secret text every few presses
+            if (presses % 3 === 0) {
+                const secretIndex = Math.floor(Math.random() * secretMessages.length);
+                secretText.textContent = secretMessages[secretIndex];
+            }
+            
+            // Visual feedback
+            messageBox.classList.add('pressed');
+            button.style.background = `linear-gradient(45deg, #${Math.floor(Math.random()*16777215).toString(16)}, #${Math.floor(Math.random()*16777215).toString(16)})`;
+            
+            // Random emoji spin
+            emojis.forEach(emoji => {
+                emoji.style.animationDuration = `${0.5 + Math.random()}s`;
+            });
+            
+            // Remove pressed class after animation
+            setTimeout(() => {
+                messageBox.classList.remove('pressed');
+            }, 500);
+            
+            // Fun page title change
+            document.title = `Pressed ${presses} times! 🔘`;
+            
+            // Console log for fun
+            console.log(`Button pressed ${presses} times! Keep going!`);
+        });
+        
+        // Add some interactivity to emojis
+        emojis.forEach(emoji => {
+            emoji.addEventListener('mouseover', () => {
+                emoji.style.transform = 'scale(1.5)';
+            });
+            
+            emoji.addEventListener('mouseout', () => {
+                emoji.style.transform = 'scale(1)';
+            });
+        });
+        
+        // Easter egg: Konami code
+        const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        let konamiIndex = 0;
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === konamiCode[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === konamiCode.length) {
+                    secretText.textContent = "🎮 KONAMI CODE ACTIVATED! INVINCIBLE MODE! 🎮";
+                    button.style.background = 'linear-gradient(45deg, gold, orange)';
+                    button.textContent = "⭐ INVINCIBLE BUTTON ⭐";
+                    konamiIndex = 0;
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        });
+        
+        // Initialize with fun console message
+        console.log('%c🔘 BUTTON WEBSITE LOADED! 🔘', 'color: #3498db; font-size: 20px; font-weight: bold;');
+        console.log('%cReady for button pressing!', 'color: #2ecc71;');
+    </script>
+</body>
+</html>
